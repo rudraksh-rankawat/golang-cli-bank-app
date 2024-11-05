@@ -3,12 +3,17 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 )
 
 var balanceFile = "balance.txt"
 
-func readFromFile() float64 {
-	
+func readFromFile() (x float64) {
+	data, _ := os.ReadFile(balanceFile)
+	stringBalanceData := string(data)
+	float64BalanceData, _ := strconv.ParseFloat(stringBalanceData, 64)
+	x = float64BalanceData
+	return
 }
 
 func writeToFile(balance float64) {
@@ -19,7 +24,7 @@ func writeToFile(balance float64) {
 
 func main() {
 	fmt.Println("Welcome to the CLI Bank...")
-	var accountBalance float64 = 1000
+	accountBalance := readFromFile()
 	for {
 
 		fmt.Println("Please choose an option:")
