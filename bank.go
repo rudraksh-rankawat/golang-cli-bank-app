@@ -4,16 +4,25 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"errors"
 )
 
 var balanceFile = "balance.txt"
 
-func readFromFile() (x float64) {
-	data, _ := os.ReadFile(balanceFile)
+func readFromFile() (float64, error) {
+	
+	data, err := os.ReadFile(balanceFile)
+	if err != nil {
+		return 0, errors.New("unable to find the balance file")
+	}
 	stringBalanceData := string(data)
-	float64BalanceData, _ := strconv.ParseFloat(stringBalanceData, 64)
-	x = float64BalanceData
-	return
+
+	float64BalanceData, err := strconv.ParseFloat(stringBalanceData, 64)
+	if err != nil {
+		return 0, errors.New("unable to convert the balance to float64") 
+	}
+
+	return float64BalanceData, nil
 }
 
 func writeToFile(balance float64) {
@@ -24,7 +33,14 @@ func writeToFile(balance float64) {
 
 func main() {
 	fmt.Println("Welcome to the CLI Bank...")
-	accountBalance := readFromFile()
+	accountBalance, err := readFromFile()
+	if err != nil {
+		fmt.Println("--------")
+		fmt.Println("ERROR!")
+		fmt.Println(err)
+		panic("Unable to fetch the balance...")
+	}
+
 	for {
 
 		fmt.Println("Please choose an option:")
