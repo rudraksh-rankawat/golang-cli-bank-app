@@ -2,38 +2,15 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strconv"
-	"errors"
+	"example1.com/bank/file_utility"
 )
 
 var balanceFile = "balance.txt"
 
-func readFromFile() (float64, error) {
-	
-	data, err := os.ReadFile(balanceFile)
-	if err != nil {
-		return 0, errors.New("unable to find the balance file")
-	}
-	stringBalanceData := string(data)
-
-	float64BalanceData, err := strconv.ParseFloat(stringBalanceData, 64)
-	if err != nil {
-		return 0, errors.New("unable to convert the balance to float64") 
-	}
-
-	return float64BalanceData, nil
-}
-
-func writeToFile(balance float64) {
-	data := fmt.Sprintf("%f", balance)
-	os.WriteFile(balanceFile, []byte(data), 0644)
-	// log.Println("Balance successfully recorded")
-}
 
 func main() {
 	fmt.Println("Welcome to the CLI Bank...")
-	accountBalance, err := readFromFile()
+	accountBalance, err := file_utility.ReadFloatFromFile(balanceFile)
 	if err != nil {
 		fmt.Println("--------")
 		fmt.Println("ERROR!")
@@ -43,11 +20,7 @@ func main() {
 
 	for {
 
-		fmt.Println("Please choose an option:")
-		fmt.Println("1. Check Balance")
-		fmt.Println("2. Deposit Money")
-		fmt.Println("3. Withdraw Money")
-		fmt.Println("4. Exit")
+		printMain()
 
 		var choice int
 		fmt.Print("Enter option: ")
@@ -72,7 +45,7 @@ func main() {
 				continue
 			}
 			accountBalance += deposit
-			writeToFile(accountBalance)
+			file_utility.WriteFloatToFile(accountBalance, balanceFile)
 			fmt.Printf("Here is your updated balance: ")
 			fmt.Printf("%f\n\n", accountBalance)
 
@@ -87,7 +60,7 @@ func main() {
 				continue
 			}
 			accountBalance -= withdrawed
-			writeToFile(accountBalance)
+			file_utility.WriteFloatToFile(accountBalance, balanceFile)
 			fmt.Printf("Here is your updated balance: %f\n\n", accountBalance)
 		} else {
 
